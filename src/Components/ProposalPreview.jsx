@@ -1932,185 +1932,103 @@ function ProposalPreview({
   /* =======================================================
      PDF DOWNLOAD
   ======================================================= */
+const handleDownloadPDF = async () => {
+  const pages = Array.from(
+    document.querySelectorAll("[data-pdf-page='true']")
+  );
 
-  const handleDownloadPDF =
-    async () => {
-      if (isDownloading) return;
+  if (!pages.length) {
+    alert("No proposal pages found.");
+    return;
+  }
 
-      try {
-        setIsDownloading(true);
+  const pdf = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4",
+    compress: true,
+  });
 
-        const container =
-          proposalPagesRef.current;
+  const PAGE_WIDTH = 794;
+  const PAGE_HEIGHT = 1123;
 
-        if (!container) {
-          throw new Error(
-            "Proposal pages container not found."
-          );
-        }
+  for (let i = 0; i < pages.length; i++) {
+    const page = pages[i];
 
-        const pageElements =
-          Array.from(
-            container.querySelectorAll(
-              '[data-proposal-page="true"]'
-            )
-          );
-
-        if (!pageElements.length) {
-          throw new Error(
-            "No proposal pages found."
-          );
-        }
-
-        const pdf = new jsPDF({
-          orientation: "portrait",
-          unit: "mm",
-          format: "a4",
-          compress: true,
-        });
-
-        for (
-          let index = 0;
-          index < pageElements.length;
-          index++
-        ) {
-          const page =
-            pageElements[index];
-
-          /*
-            Save original styles.
-          */
-
-          const originalTransform =
-            page.style.transform;
-
-          const originalTransformOrigin =
-            page.style.transformOrigin;
-
-          const originalWidth =
-            page.style.width;
-
-          const originalHeight =
-            page.style.height;
-
-          /*
-            Remove responsive scaling.
-          */
-
-          page.style.transform = "none";
-          page.style.transformOrigin =
-            "top left";
-
-          page.style.width =
-            `${PAGE_WIDTH}px`;
-
-          page.style.height =
-            `${PAGE_HEIGHT}px`;
-
-          /*
-            Allow browser to finish layout.
-          */
-
-          await new Promise((resolve) =>
-            requestAnimationFrame(() =>
-              requestAnimationFrame(resolve)
-            )
-          );
-
-          await waitForImages(page);
-
-          /*
-            Capture exact A4 CSS page.
-          */
-
-          const canvas =
-            await html2canvas(
-              page,
-              {
-                width: PAGE_WIDTH,
-                height: PAGE_HEIGHT,
-
-                windowWidth:
-                  PAGE_WIDTH,
-
-                windowHeight:
-                  PAGE_HEIGHT,
-
-                scale: 2,
-
-                useCORS: true,
-                allowTaint: false,
-
-                backgroundColor:
-                  "#ffffff",
-
-                logging: false,
-
-                scrollX: 0,
-                scrollY: 0,
-              }
-            );
-
-          const imageData =
-            canvas.toDataURL(
-              "image/png"
-            );
-
-          if (index > 0) {
-            pdf.addPage(
-              "a4",
-              "portrait"
-            );
-          }
-
-          /*
-            A4 = exactly 210 x 297 mm.
-          */
-
-          pdf.addImage(
-            imageData,
-            "PNG",
-            0,
-            0,
-            210,
-            297,
-            undefined,
-            "FAST"
-          );
-
-          /*
-            Restore responsive preview.
-          */
-
-          page.style.transform =
-            originalTransform;
-
-          page.style.transformOrigin =
-            originalTransformOrigin;
-
-          page.style.width =
-            originalWidth;
-
-          page.style.height =
-            originalHeight;
-        }
-
-        pdf.save(
-          "business-proposal.pdf"
-        );
-      } catch (error) {
-        console.error(
-          "PDF download error:",
-          error
-        );
-
-        alert(
-          "PDF download failed. Please check the browser console."
-        );
-      } finally {
-        setIsDownloading(false);
-      }
+    // Save original styles
+    const original = {
+      width: page.style.width,
+      height: page.style.height,
+      minHeight: page.style.minHeight,
+      maxHeight: page.style.maxHeight,
+      transform: page.style.transform,
+      transformOrigin: page.style.transformOrigin,
+      margin: page.style.margin,
     };
+
+    // Force ONE complete A4 page
+    page.style.width = `${PAGE_WIDTH}px`;
+    page.style.height = `${PAGE_HEIGHT}px`;
+    page.style.minHeight = `${PAGE_HEIGHT}px`;
+    page.style.maxHeight = `${PAGE_HEIGHT}px`;
+    page.style.transform = "none";
+    page.style.transformOrigin = "top left";
+    page.style.margin = "0";
+
+    // Wait for browser layout
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    const canvas = await html2canvas(page, {
+      width: PAGE_WIDTH,
+      height: PAGE_HEIGHT,
+
+      // Important:
+      // Do not zoom the page while downloading.
+      scale: 1,
+
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: "#ffffff",
+
+      scrollX: 0,
+      scrollY: 0,
+
+      windowWidth: PAGE_WIDTH,
+      windowHeight: PAGE_HEIGHT,
+
+      imageTimeout: 15000,
+    });
+
+    const imageData = canvas.toDataURL("image/png");
+
+    // Every page gets its own complete A4 PDF page
+    if (i > 0) {
+      pdf.addPage("a4", "portrait");
+    }
+
+    pdf.addImage(
+      imageData,
+      "PNG",
+      0,
+      0,
+      210,
+      297,
+      undefined,
+      "FAST"
+    );
+
+    // Restore original styles
+    page.style.width = original.width;
+    page.style.height = original.height;
+    page.style.minHeight = original.minHeight;
+    page.style.maxHeight = original.maxHeight;
+    page.style.transform = original.transform;
+    page.style.transformOrigin = original.transformOrigin;
+    page.style.margin = original.margin;
+  }
+
+  pdf.save("business-proposal.pdf");
+};
 
   /* =======================================================
      PAGE
