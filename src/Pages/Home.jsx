@@ -49,15 +49,15 @@ function Home() {
                         bg-white
                       "
                       style={{
-                        aspectRatio: "794 / 1123",
+                        aspectRatio: "794 / 1150",
                       }}
                     >
                       <div
                         className="absolute left-0 top-0"
                         style={{
                           width: "794px",
-                          height: "1123px",
-                          transform: "scale(0.47)",
+                          height: "1150px",
+                          transform: "scale(0.45)",
                           transformOrigin: "top left",
                         }}
                       >
@@ -92,16 +92,7 @@ function Home() {
                     </div>
                   </div>
 
-                  {/* INFO */}
-                  <div className="p-5">
-                    <h2 className="text-lg font-bold text-slate-900">
-                      {template.name}
-                    </h2>
-
-                    <p className="mt-1 text-sm text-slate-500">
-                      {template.description}
-                    </p>
-                  </div>
+                  
                 </button>
 
                 {/* BUTTON */}
@@ -111,9 +102,7 @@ function Home() {
                     onClick={() =>
                       navigate(`/template/${template.id}`)
                     }
-                    className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
-                  >
-                    Select Template
+                  > 
                   </button>
                 </div>
               </div>

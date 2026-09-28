@@ -26,16 +26,20 @@ function Classic({ children, pageNumber = 1, totalPages = 1 }) {
 
               <div className="my-8 h-px w-12 shrink-0 bg-blue-600" />
 
-              <p className="text-sm text-slate-500">Prepared for Your Client</p>
+              <p className="text-sm text-slate-500">
+                Prepared for Your Client
+              </p>
 
               <div className="mt-auto mb-16">
-                <ProposalLogo className="h-10 w-32 object-contain" />
+                {/* COVER LOGO */}
+                <ProposalLogo className="h-14 w-40 object-contain" />
               </div>
             </div>
 
             {/* COVER FOOTER */}
-            <footer className="flex h-[55px] shrink-0 items-center justify-between  bg-white px-10">
-              <ProposalLogo className="h-10 w-24 object-contain" />
+            <footer className="flex h-[55px] shrink-0 items-center justify-between bg-white px-10">
+              {/* FOOTER LOGO */}
+              <ProposalLogo className="h-32 w-32 object-contain" />
 
               <span className="text-sm text-slate-500">
                 Page {pageNumber} of {totalPages}
@@ -45,7 +49,7 @@ function Classic({ children, pageNumber = 1, totalPages = 1 }) {
         ) : (
           <>
             {/* PAGE HEADER */}
-            <header className="flex h-[75px] shrink-0 items-center justify-between  bg-white px-10">
+            <header className="flex h-[85px] shrink-0 items-center justify-between bg-white px-10">
               <div className="min-w-0">
                 <p className="text-[9px] font-bold tracking-[3px] text-blue-700">
                   PROPOSAL STUDIO
@@ -56,19 +60,23 @@ function Classic({ children, pageNumber = 1, totalPages = 1 }) {
                 </p>
               </div>
 
-              <ProposalLogo className="h-20 w-20 shrink-0 object-contain" />
+              {/* HEADER LOGO */}
+              <ProposalLogo className="h-20 w-32 shrink-0 object-contain" />
             </header>
 
             {/* CONTENT */}
-            <main className="min-h-0 flex-1 overflow-hidden bg-slate-50 px-10 py-8">
+            <main className="min-h-0 flex-1 overflow-hidden  px-10 py-8">
               <div className="h-full min-h-0 overflow-hidden rounded-lg px-8 py-7">
-                <div className="h-full min-h-0 overflow-hidden">{children}</div>
+                <div className="h-full min-h-0 overflow-hidden">
+                  {children}
+                </div>
               </div>
             </main>
 
             {/* PAGE FOOTER */}
-            <footer className="flex h-[55px] shrink-0 items-center justify-between border-t border-blue-100 bg-white px-10">
-              <ProposalLogo className="h-20 w-24 object-contain" />
+            <footer className="flex h-[60px] shrink-0 items-center justify-between bg-white px-10">
+              {/* FOOTER LOGO */}
+              <ProposalLogo className="h-14 w-32 object-contain" />
 
               <span className="text-sm text-slate-500">
                 Page {pageNumber} of {totalPages}
