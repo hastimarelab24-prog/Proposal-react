@@ -4,46 +4,51 @@ import ProposalLogo from "../Components/ProposalLogo";
 function CreativeBlue({ children, pageNumber = 1, totalPages = 1 }) {
   return (
     <div
-      className="proposal-a4-page relative mx-auto h-[1123px] w-[794px] overflow-hidden bg-white text-slate-800 shadow-2xl"
+      className="proposal-a4-page relative mx-auto flex h-[1123px] w-[794px] flex-col overflow-hidden bg-white text-slate-800"
       data-pdf-page="true"
     >
-      {/* LIGHT DECORATION */}
-      <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-blue-50" />
-      <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-sky-50" />
+      {/* TOP ACCENT */}
+      <div className="h-2 w-full bg-blue-600" />
 
-      {/* PAGE */}
-      <div className="relative z-10 flex h-full min-h-0 flex-col">
-        {/* HEADER */}
-        <header className="flex h-[85px] shrink-0 items-center justify-between border-b border-slate-200 px-10">
+      {/* HEADER */}
+      <header className="flex h-[115px] shrink-0 items-center justify-between px-12">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-1 rounded-full bg-blue-600" />
+
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[3px] text-blue-700">
+            <p className="text-xs font-bold uppercase tracking-[2px] text-slate-800">
               Proposal Studio
             </p>
 
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-[11px] text-slate-400">
               Creative Business Proposal
             </p>
           </div>
+        </div>
 
-          <ProposalLogo className="h-20 w-24 object-contain" />
-        </header>
+        <ProposalLogo className="h-20 w-32 object-contain" />
+      </header>
 
-        {/* CONTENT */}
-        <main className="min-h-0 flex-1 overflow-hidden px-10 py-8">
-          <div className="h-full min-h-0 overflow-hidden border-l-2 border-blue-100 pl-6">
+      {/* CONTENT */}
+      <main className="min-h-0 flex-1  px-12 ">
+        <div className="h-full min-h-0 rounded-xl  p-7">
+          <div className="h-full min-h-0 overflow-hidden rounded-lg bg-white p-6">
             {children}
           </div>
-        </main>
+        </div>
+      </main>
 
-        {/* FOOTER */}
-        <footer className="flex h-[55px] shrink-0 items-center justify-between border-t border-slate-200 bg-slate-50 px-10">
-          <ProposalLogo className="h-15 w-20 object-contain" />
+      {/* FOOTER */}
+      <footer className="flex h-[70px] shrink-0 items-center justify-between bg-slate-900 px-12">
+        <ProposalLogo className="h-24 w-24 object-contain brightness-0 invert" />
 
-          <span className="text-xs font-medium text-slate-500">
+        <div className="flex items-center gap-3 text-xs text-white">
+          <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+          <span>
             Page {pageNumber} of {totalPages}
           </span>
-        </footer>
-      </div>
+        </div>
+      </footer>
     </div>
   );
 }

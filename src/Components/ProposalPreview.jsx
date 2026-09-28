@@ -24,7 +24,10 @@ const PAGE_HEIGHT = 1123;
   This is intentionally conservative because different
   templates have different header/footer sizes.
 */
-const MAX_CONTENT_HEIGHT = 790;
+const MAX_CONTENT_HEIGHT = 735;
+
+//   If very little space remains on a page, start the next block on a new page.
+const MIN_REMAINING_HEIGHT = 40;
 
 /* MERMAID */
 
@@ -101,7 +104,8 @@ function MarkdownContent({ content = "" }) {
     typeof content === "string" ? content : String(content ?? "");
 
   return (
-    <div className="proposal-markdown max-w-none break-words text-[14px] leading-7 text-slate-700 sm:text-[15px] sm:leading-7">
+    <div className="proposal-markdown w-full max-w-none min-w-0 break-words text-[14px] leading-7 text-slate-700 sm:text-[15px] sm:leading-7">
+      {" "}
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         urlTransform={(url) => {
@@ -132,7 +136,7 @@ function MarkdownContent({ content = "" }) {
                   src={src}
                   alt={alt || "Proposal image"}
                   title={title || ""}
-                  className="block max-h-[360px] max-w-full rounded-xl object-contain shadow-sm sm:max-h-[360px]"
+                  className="block h-auto max-h-[300px] max-w-full rounded-xl object-contain shadow-sm"
                 />
               </div>
             );
@@ -166,34 +170,72 @@ function MarkdownContent({ content = "" }) {
 
           /*   PARAGRAPH */
 
-          p: ({ children }) => (
-            <p className="mb-3 leading-7 text-slate-700 sm:leading-7">{children}</p>
-          ),
+          p: ({ children }) => {
+            const items = React.Children.toArray(children);
+
+            if (
+              items.length === 1 &&
+              typeof items[0] === "string" &&
+              /^https?:\/\/.+/i.test(items[0])
+            ) {
+              return (
+                <img
+                  src={items[0]}
+                  alt="Image"
+                  className="mx-auto block h-auto max-h-[300px] max-w-full rounded-xl object-contain"
+                />
+              );
+            }
+
+            return <p>{children}</p>;
+          },
 
           /*   LIST*/
 
           ul: ({ children }) => (
-            <ul className="mb-4 list-disc space-y-1 pl-5 sm:pl-6">{children}</ul>
+            <ul className="mb-4 list-disc space-y-1 pl-5 sm:pl-6">
+              {children}
+            </ul>
           ),
 
           ol: ({ children }) => (
-            <ol className="mb-4 list-decimal space-y-1 pl-5 sm:pl-6">{children}</ol>
+            <ol className="mb-4 list-decimal space-y-1 pl-5 sm:pl-6">
+              {children}
+            </ol>
           ),
 
-          li: ({ children }) => <li className="leading-6 sm:leading-7">{children}</li>,
+          li: ({ children }) => (
+            <li className="leading-6 sm:leading-7">{children}</li>
+          ),
 
           /*  LINK */
 
-          a: ({ href, children }) => (
-            <a
-              href={href}
-              target="_blank"
-              rel="noreferrer"
-              className="text-blue-600 underline hover:text-blue-800"
-            >
-              {children}
-            </a>
-          ),
+          a: ({ href, children }) => {
+            const isImageUrl =
+              /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(href || "") ||
+              (href || "").includes("encrypted-tbn0.gstatic.com");
+
+            if (isImageUrl) {
+              return (
+                <img
+                  src={href}
+                  alt="Image"
+                  className="mx-auto block h-auto max-h-[300px] max-w-full rounded-xl object-contain"
+                />
+              );
+            }
+
+            return (
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline"
+              >
+                {children}
+              </a>
+            );
+          },
 
           /*  TEXT */
 
@@ -242,7 +284,9 @@ function MarkdownContent({ content = "" }) {
           ),
 
           td: ({ children }) => (
-            <td className="border border-slate-200 px-3 py-2 sm:px-3">{children}</td>
+            <td className="border border-slate-200 px-3 py-2 sm:px-3">
+              {children}
+            </td>
           ),
 
           /* 
@@ -271,6 +315,7 @@ function MarkdownContent({ content = "" }) {
 
             return (
               <pre className="my-4 overflow-x-auto whitespace-pre-wrap break-words rounded-xl bg-slate-900 p-4 text-sm leading-6 text-white">
+                {" "}
                 {children}
               </pre>
             );
@@ -377,42 +422,33 @@ function splitMarkdownBlocks(markdown) {
 /* 
    CREATE PAGES
  */
-
 function createPagesFromBlocks(blocks, heights, maxHeight) {
   const pages = [];
-
   let currentPage = [];
   let currentHeight = 0;
 
   blocks.forEach((block, index) => {
     const blockHeight = heights[index] || 0;
 
-    /*
-      If adding this block would exceed
-      available content space, start a new page.
-    */
-    if (currentPage.length > 0 && currentHeight + blockHeight > maxHeight) {
-      pages.push(currentPage.map((item) => item.content).join("\n\n"));
+    if (
+      currentPage.length > 0 &&
+      currentHeight + blockHeight > maxHeight
+    ) {
+      pages.push(
+        currentPage.map((item) => item.content).join("\n\n")
+      );
 
       currentPage = [];
       currentHeight = 0;
     }
 
-    /*
-      Add block.
-    */
     currentPage.push(block);
     currentHeight += blockHeight;
 
-    /*
-      Manual --- page break.
-
-      IMPORTANT:
-      The block stays on the current page.
-      The NEXT block starts on a new page.
-    */
     if (block.forceBreak) {
-      pages.push(currentPage.map((item) => item.content).join("\n\n"));
+      pages.push(
+        currentPage.map((item) => item.content).join("\n\n")
+      );
 
       currentPage = [];
       currentHeight = 0;
@@ -420,7 +456,9 @@ function createPagesFromBlocks(blocks, heights, maxHeight) {
   });
 
   if (currentPage.length > 0) {
-    pages.push(currentPage.map((item) => item.content).join("\n\n"));
+    pages.push(
+      currentPage.map((item) => item.content).join("\n\n")
+    );
   }
 
   return pages;
@@ -464,7 +502,9 @@ function CoverContent({ data }) {
         {data.title}
       </h1>
 
-      <p className="mt-4 text-lg text-slate-500 sm:mt-6 sm:text-lg">{data.subtitle}</p>
+      <p className="mt-4 text-lg text-slate-500 sm:mt-6 sm:text-lg">
+        {data.subtitle}
+      </p>
 
       <div className="mt-7 h-1 w-24 rounded-full bg-blue-600 sm:mt-10 sm:w-24" />
     </div>
@@ -498,6 +538,8 @@ function waitForImages(container) {
 
 /* 
    MAIN COMPONENT
+
+
  */
 
 function ProposalPreview({
@@ -583,9 +625,9 @@ function ProposalPreview({
         measurementRef.current?.querySelectorAll(".markdown-measure-block") ||
         [];
 
-      const heights = Array.from(elements).map(
-        (element) => element.getBoundingClientRect().height,
-      );
+      const heights = Array.from(elements).map((element) => {
+        return Math.ceil(element.getBoundingClientRect().height);
+      });
 
       const newPages = createPagesFromBlocks(
         blocks,
@@ -596,7 +638,7 @@ function ProposalPreview({
       if (!cancelled) {
         setAutomaticPages(newPages);
       }
-    }, 250);
+    }, 100);
 
     return () => {
       cancelled = true;
@@ -631,7 +673,6 @@ function ProposalPreview({
   const totalPages = contentPages.length + 1;
 
   /*   PDF DOWNLOAD*/
-
 
   const handleDownloadPDF = async () => {
     if (isDownloading) return;
@@ -718,7 +759,14 @@ function ProposalPreview({
         }
 
         pdf.addImage(
-          canvas.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, 210, 297, undefined, "FAST",
+          canvas.toDataURL("image/jpeg", 0.95),
+          "JPEG",
+          0,
+          0,
+          210,
+          297,
+          undefined,
+          "FAST",
         );
       }
 
@@ -792,7 +840,9 @@ function ProposalPreview({
 
       <div className="mb-4 flex w-full shrink-0 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm sm:mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3">
         <div className="min-w-0">
-          <h2 className="text-lg font-bold text-slate-900 sm:text-lg">Proposal Preview</h2>
+          <h2 className="text-lg font-bold text-slate-900 sm:text-lg">
+            Proposal Preview
+          </h2>
 
           <p className="text-xs text-slate-500">
             {totalPages} page
@@ -817,6 +867,7 @@ function ProposalPreview({
         className="pointer-events-none fixed left-[-99999px] top-0"
         style={{
           width: `${PAGE_WIDTH - 112}px`,
+          maxWidth: `${PAGE_WIDTH - 112}px`,
         }}
       >
         {blocks.map((block, index) => (

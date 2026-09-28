@@ -35,33 +35,21 @@ function MarkdownEditor({
 
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      alert("Please select an image file.");
-      event.target.value = "";
-      return;
-    }
-
     const reader = new FileReader();
 
-    reader.onload = (e) => {
-      const imageData = e.target?.result;
+    reader.onload = () => {
+      const imageMarkdown=`![${file.name}](${reader.result})`;
+      const nextMarkdown=`${markdown || ""} \n\n${imageMarkdown}\n`
+      if(typeof setMarkdown==="function"){
+        setMarkdown(nextMarkdown);
+      }else if(typeof onChange==="function"){
+        onChange(nextMarkdown);
+      }
 
-      if (!imageData) return;
-
-      const imageMarkdown =
-        `![${file.name}](${imageData})`;
-
-      const newValue = editorValue
-        ? `${editorValue}\n\n${imageMarkdown}\n\n`
-        : `${imageMarkdown}\n\n`;
-
-      updateMarkdown(newValue);
+      
     };
 
-    reader.onerror = () => {
-      alert("Unable to read the selected image.");
-    };
-
+    
     reader.readAsDataURL(file);
 
     event.target.value = "";

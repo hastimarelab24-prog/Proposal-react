@@ -1,11 +1,7 @@
 import React from "react";
 import ProposalLogo from "../Components/ProposalLogo";
 
-function Classic({
-  children,
-  pageNumber = 1,
-  totalPages = 1,
-}) {
+function Classic({ children, pageNumber = 1, totalPages = 1 }) {
   const isFirstPage = pageNumber === 1;
 
   return (
@@ -14,12 +10,10 @@ function Classic({
       data-pdf-page="true"
     >
       <div className="relative flex h-full min-h-0 flex-col overflow-hidden border border-slate-300 bg-white">
-
         {/* COVER PAGE */}
         {isFirstPage ? (
           <>
             <div className="flex min-h-0 flex-1 flex-col items-center px-10 pt-16 text-center">
-
               <p className="text-xs font-bold tracking-[4px] text-blue-700">
                 PROPOSAL STUDIO
               </p>
@@ -32,9 +26,7 @@ function Classic({
 
               <div className="my-8 h-px w-12 shrink-0 bg-blue-600" />
 
-              <p className="text-sm text-slate-500">
-                Prepared for Your Client
-              </p>
+              <p className="text-sm text-slate-500">Prepared for Your Client</p>
 
               <div className="mt-auto mb-16">
                 <ProposalLogo className="h-10 w-32 object-contain" />
@@ -42,7 +34,7 @@ function Classic({
             </div>
 
             {/* COVER FOOTER */}
-            <footer className="flex h-[55px] shrink-0 items-center justify-between border-t border-blue-100 bg-white px-10">
+            <footer className="flex h-[55px] shrink-0 items-center justify-between  bg-white px-10">
               <ProposalLogo className="h-10 w-24 object-contain" />
 
               <span className="text-sm text-slate-500">
@@ -53,8 +45,7 @@ function Classic({
         ) : (
           <>
             {/* PAGE HEADER */}
-            <header className="flex h-[75px] shrink-0 items-center justify-between border-b border-blue-100 bg-white px-10">
-
+            <header className="flex h-[75px] shrink-0 items-center justify-between  bg-white px-10">
               <div className="min-w-0">
                 <p className="text-[9px] font-bold tracking-[3px] text-blue-700">
                   PROPOSAL STUDIO
@@ -69,15 +60,14 @@ function Classic({
             </header>
 
             {/* CONTENT */}
-            <main className="min-h-0 flex-1 overflow-hidden px-10 py-7">
-              <div className="h-full min-h-0 overflow-hidden">
-                {children}
+            <main className="min-h-0 flex-1 overflow-hidden bg-slate-50 px-10 py-8">
+              <div className="h-full min-h-0 overflow-hidden rounded-lg px-8 py-7">
+                <div className="h-full min-h-0 overflow-hidden">{children}</div>
               </div>
             </main>
 
             {/* PAGE FOOTER */}
             <footer className="flex h-[55px] shrink-0 items-center justify-between border-t border-blue-100 bg-white px-10">
-
               <ProposalLogo className="h-20 w-24 object-contain" />
 
               <span className="text-sm text-slate-500">

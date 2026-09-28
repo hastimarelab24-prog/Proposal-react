@@ -9,7 +9,7 @@ function BlueCorporate({ children, pageNumber = 1, totalPages = 1 }) {
     >
       {/* TOP HEADER */}
 
-      <header className="flex shrink-0 items-center justify-between px-12 py-7">
+      <header className="flex shrink-0 items-center justify-between px-12 py-0">
         <span className="text-xs font-bold tracking-[3px] text-slate-900">
           PROPOSAL
         </span>
@@ -18,10 +18,11 @@ function BlueCorporate({ children, pageNumber = 1, totalPages = 1 }) {
       </header>
 
       {/* MAIN CONTENT */}
-
-      <main className="min-h-0 flex-1 overflow-hidden px-16 pt-12 pb-4">
-        <div className="h-full min-h-0 overflow-hidden">
-          <div className=" pt-6">{children}</div>
+    <main className="min-h-0 flex-1  px-12 ">
+        <div className="h-full min-h-0 rounded-xl  px-7">
+          <div className="h-full min-h-0 overflow-hidden rounded-lg bg-white p-6">
+            {children}
+          </div>
         </div>
       </main>
 
@@ -33,18 +34,12 @@ function BlueCorporate({ children, pageNumber = 1, totalPages = 1 }) {
         <div className="absolute left-0 top-[25px] h-[30px] w-full bg-[#1B2222]" />
 
         {/* BLUE SHAPE - LEFT */}
-
         <div className="absolute left-[52%] top-[9px] z-10 h-[62px] w-[42px] -skew-x-[18deg] bg-[#73B6D9]" />
 
         {/* BLUE SHAPE - RIGHT */}
-
         <div className="absolute left-[61%] top-[9px] z-10 h-[62px] w-[42px] -skew-x-[18deg] bg-[#73B6D9]" />
 
-        {/* PAGE NUMBER */}
-
-        <div className="absolute bottom-[16px] right-16 z-20 text-[9px] text-white text-xl justify-center">
-          Page {pageNumber} of {totalPages}
-        </div>
+  
       </footer>
     </div>
   );
