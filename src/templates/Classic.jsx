@@ -1,5 +1,3 @@
-
-
 import React from "react";
 import ProposalLogo from "../Components/ProposalLogo";
 
@@ -15,19 +13,14 @@ function Classic({
       className="proposal-a4-page relative mx-auto h-[1123px] w-[794px] overflow-hidden bg-slate-50 p-5 shadow-2xl"
       data-pdf-page="true"
     >
-      {/* INNER PAGE */}
+      <div className="relative flex h-full min-h-0 flex-col overflow-hidden border border-slate-300 bg-white">
 
-      <div className="relative flex h-full min-h-0 flex-col overflow-hidden border border-slate-400 bg-white">
-
-        {/* PAGE 1 COVER */}
-
+        {/* COVER PAGE */}
         {isFirstPage ? (
           <>
-            {/* COVER CONTENT */}
+            <div className="flex min-h-0 flex-1 flex-col items-center px-10 pt-16 text-center">
 
-            <div className="flex flex-1 flex-col items-center px-10 pt-16 text-center">
-
-              <p className="text-xs font-bold tracking-[4px] text-slate-800">
+              <p className="text-xs font-bold tracking-[4px] text-blue-700">
                 PROPOSAL STUDIO
               </p>
 
@@ -37,38 +30,33 @@ function Classic({
                 Partnership
               </h1>
 
-              {/* SMALL LINE */}
-
-              <div className="my-8 h-px w-12 bg-slate-800" />
+              <div className="my-8 h-px w-12 shrink-0 bg-blue-600" />
 
               <p className="text-sm text-slate-500">
                 Prepared for Your Client
               </p>
 
-              {/* LOGO */}
-
-              <div className="mt-auto mb-20">
+              <div className="mt-auto mb-16">
                 <ProposalLogo className="h-10 w-32 object-contain" />
               </div>
             </div>
 
             {/* COVER FOOTER */}
+            <footer className="flex h-[55px] shrink-0 items-center justify-between border-t border-blue-100 bg-white px-10">
+              <ProposalLogo className="h-10 w-24 object-contain" />
 
-            <footer className="flex h-[55px] shrink-0 items-center justify-between border-t border-slate-300 bg-white px-10">
-              <ProposalLogo className="h-20 w-30 object-contain" />
-
-              <span className="text-xl text-slate-500">
+              <span className="text-sm text-slate-500">
                 Page {pageNumber} of {totalPages}
               </span>
             </footer>
           </>
         ) : (
           <>
-            {/* OTHER PAGES HEADER */}
+            {/* PAGE HEADER */}
+            <header className="flex h-[75px] shrink-0 items-center justify-between border-b border-blue-100 bg-white px-10">
 
-            <header className="flex h-[75px] shrink-0 items-center justify-between border-b border-slate-300 px-10">
-              <div>
-                <p className="text-[9px] font-bold tracking-[3px] text-slate-700">
+              <div className="min-w-0">
+                <p className="text-[9px] font-bold tracking-[3px] text-blue-700">
                   PROPOSAL STUDIO
                 </p>
 
@@ -77,29 +65,27 @@ function Classic({
                 </p>
               </div>
 
-              <ProposalLogo className="h-6 w-20 object-contain" />
+              <ProposalLogo className="h-20 w-20 shrink-0 object-contain" />
             </header>
 
-            {/* MARKDOWN CONTENT */}
-
-            <main className="min-h-0 flex-1 overflow-hidden px-12 py-8">
+            {/* CONTENT */}
+            <main className="min-h-0 flex-1 overflow-hidden px-10 py-7">
               <div className="h-full min-h-0 overflow-hidden">
                 {children}
               </div>
             </main>
 
-            {/* NORMAL PAGE FOOTER */}
+            {/* PAGE FOOTER */}
+            <footer className="flex h-[55px] shrink-0 items-center justify-between border-t border-blue-100 bg-white px-10">
 
-        <footer className="mt-6 flex h-[55px] shrink-0 items-center justify-between border-t border-sky-100 text-[9px] ">
-          <ProposalLogo className="h-20 w-30 font-semibold rounded p-1 shadow-sm" />
+              <ProposalLogo className="h-20 w-24 object-contain" />
 
-              <span className=" text-sm pr-3">
+              <span className="text-sm text-slate-500">
                 Page {pageNumber} of {totalPages}
               </span>
             </footer>
           </>
         )}
-
       </div>
     </div>
   );

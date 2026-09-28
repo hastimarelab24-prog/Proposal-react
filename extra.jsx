@@ -1,147 +1,128 @@
-
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { IoMdHome } from "react-icons/io";
-
-import MarkdownEditor from "../Components/MarkdownEditor";
-import ProposalPreview from "../Components/ProposalPreview";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import templates from "../templates/templateData";
 
-const DEFAULT_MARKDOWN = `# Business Proposal
-
-## Executive Summary
-
-Your proposal content will appear here.
-
-## Our Services
-
-Add your services and business information using the Markdown editor.
-
-## Project Process
-
-\`\`\`mermaid
-graph TD
-  A[Discovery] --> B[Planning]
-  B --> C[Design]
-  C --> D[Development]
-  D --> E[Testing]
-  E --> F[Launch]
-\`\`\`
-
-## Investment
-
-| Service | Description | Price |
-| ------- | ----------- | ----- |
-| Website | Business website | ₹50,000 |
-| UI/UX | Complete UI/UX design | ₹30,000 |
-| Consulting | Business consulting | ₹20,000 |
-
-## Next Steps
-
-1. Project discussion
-2. Final requirements
-3. Design approval
-4. Development
-5. Final delivery
-`;
-
-function ProposalBuilder() {
+function Home() {
   const navigate = useNavigate();
-  const { templateId } = useParams();
-
-  const [markdown, setMarkdown] = useState(() => {
-    return localStorage.getItem("proposalMarkdown") || DEFAULT_MARKDOWN;
-  });
-
-  const [companyName, setCompanyName] = useState(() => {
-    return localStorage.getItem("proposalCompanyName") || "Marelab";
-  });
-
-  const selectedTemplate = templates.find(
-    (template) => String(template.id) === String(templateId),
-  );
-
-  const TemplateComponent = selectedTemplate?.component;
-
-  useEffect(() => {
-    localStorage.setItem("proposalMarkdown", markdown);
-  }, [markdown]);
-
-  useEffect(() => {
-    localStorage.setItem("proposalCompanyName", companyName);
-  }, [companyName]);
-
-  if (!TemplateComponent) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-100">
-        <div className="rounded-xl bg-white p-8 text-center shadow">
-          <h2 className="text-xl font-bold text-red-600">Template not found</h2>
-
-          <p className="mt-2 text-sm text-slate-500">
-            Please check templateData.js
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-slate-100">
-      {/* TOP BAR */}
-      <div className="border-b bg-white px-6 py-4">
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-slate-900">
-              Proposal Builder
-            </h1>
+      {/* HEADER */}
+      <header className="border-b border-slate-200 bg-white px-4 py-5 sm:px-6 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            Proposal Studio
+          </h1>
 
-            <p className="text-sm text-slate-500">{selectedTemplate.name}</p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={() => navigate("/")}
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-300 text-slate-600 transition hover:bg-blue-50 hover:text-blue-600"
-              title="Go to Home"
-            >
-              <IoMdHome size={22} />
-            </button>
-
-            <input
-              type="text"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              placeholder="Company Name"
-              className="rounded-lg border border-slate-300 px-4 py-2 outline-none focus:border-blue-500"
-            />
-          </div>
+          <p className="mt-1 text-sm text-slate-500 sm:text-base">
+            Choose a professional proposal template
+          </p>
         </div>
-      </div>
+      </header>
 
-      {/* EDITOR + PREVIEW */}
-      <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-6 p-6 lg:grid-cols-2">
-        {/* EDITOR */}
-        <section className="min-w-0 overflow-hidden rounded-2xl bg-white shadow">
-          <MarkdownEditor
-            markdown={markdown}
-            setMarkdown={setMarkdown}
-            onClear={() => setMarkdown("")}
-            onReset={() => setMarkdown("")}
-          />
-        </section>
+      {/* TEMPLATES */}
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 md:px-8">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {templates.map((template) => {
+            const TemplateComponent = template.component;
 
-        {/* PREVIEW */}
-        <section className="min-w-0 overflow-hidden rounded-2xl bg-slate-200 p-4 shadow">
-          <ProposalPreview
-            markdown={markdown}
-            companyName={companyName}
-            TemplateComponent={TemplateComponent}
-          />
-        </section>
-      </div>
+            return (
+              <div
+                key={template.id}
+                className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
+                {/* PREVIEW */}
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate(`/template/${template.id}`)
+                  }
+                  className="block w-full text-left"
+                >
+                  <div className="flex w-full justify-center overflow-hidden bg-slate-100 p-4 sm:p-5">
+                    <div
+                      className="
+                        relative
+                        w-full
+                        max-w-[380px]
+                        overflow-hidden
+                        bg-white
+                      "
+                      style={{
+                        aspectRatio: "794 / 1123",
+                      }}
+                    >
+                      <div
+                        className="absolute left-0 top-0"
+                        style={{
+                          width: "794px",
+                          height: "1123px",
+                          transform: "scale(0.47)",
+                          transformOrigin: "top left",
+                        }}
+                      >
+                        <TemplateComponent
+                          pageNumber={1}
+                          totalPages={1}
+                          isCover={true}
+                        >
+                          <div className="flex h-full flex-col justify-center">
+                            <div className="mb-5 h-1 w-20 bg-blue-600" />
+
+                            <h2 className="text-5xl font-bold text-slate-900">
+                              Executive Summary
+                            </h2>
+
+                            <p className="mt-5 text-xl text-slate-600">
+                              Professional business proposal
+                              content preview.
+                            </p>
+
+                            <h3 className="mt-10 text-3xl font-bold text-slate-900">
+                              Our Services
+                            </h3>
+
+                            <p className="mt-3 text-xl text-slate-700">
+                              Strategic solutions designed for
+                              your business.
+                            </p>
+                          </div>
+                        </TemplateComponent>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* INFO */}
+                  <div className="p-5">
+                    <h2 className="text-lg font-bold text-slate-900">
+                      {template.name}
+                    </h2>
+
+                    <p className="mt-1 text-sm text-slate-500">
+                      {template.description}
+                    </p>
+                  </div>
+                </button>
+
+                {/* BUTTON */}
+                <div className="px-5 pb-5">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigate(`/template/${template.id}`)
+                    }
+                    className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+                  >
+                    Select Template
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </main>
     </div>
   );
 }
 
-export default ProposalBuilder;
+export default Home;

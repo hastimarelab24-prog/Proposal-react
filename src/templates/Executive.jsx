@@ -11,9 +11,9 @@ function Executive({
       className="proposal-a4-page relative mx-auto flex h-[1123px] w-[794px] flex-col overflow-hidden bg-white shadow-2xl"
       data-pdf-page="true"
     >
-      {/* =================================================
+      {/* 
           HEADER
-      ================================================= */}
+       */}
 
       <header className="flex h-[120px] w-full shrink-0 items-center justify-between bg-slate-800 px-12">
         <div>
@@ -33,20 +33,9 @@ function Executive({
         </div>
       </header>
 
-      {/* =================================================
-          CONTENT AREA
-          
-          1123
-          - 120 header
-          - 55 footer
-          = 948
-
-          Main has:
-          40px top
-          40px bottom
-
-          Actual content area ≈ 868px
-      ================================================= */}
+      {/* 
+          CONTENT AREA 1123- 120 header- 55 footer = 948 Main has: 40px top 40px bottom Actual content area ≈ 868px
+       */}
 
       <main className="min-h-0 flex-1 overflow-hidden px-12 py-10">
         <div className="h-full min-h-0 overflow-hidden">
@@ -54,9 +43,7 @@ function Executive({
         </div>
       </main>
 
-      {/* =================================================
-          FOOTER
-      ================================================= */}
+      {/*   FOOTER */}
 
       <footer className="flex h-[55px] w-full shrink-0 items-center justify-between border-t border-slate-200 bg-white px-12 text-[9px] text-slate-400">
         <ProposalLogo className="h-10 w-24 object-contain" />

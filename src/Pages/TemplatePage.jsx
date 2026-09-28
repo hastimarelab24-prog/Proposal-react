@@ -85,7 +85,7 @@ function TemplatePage() {
 
         <div className="rounded-2xl bg-white p-8 shadow-sm">
           <div className="flex justify-center overflow-hidden rounded-xl bg-slate-200 p-8">
-            <div className="origin-top scale-[0.7]">
+            <div className="origin-top ">
               <TemplateComponent
                 pageNumber={1}
                 totalPages={1}
